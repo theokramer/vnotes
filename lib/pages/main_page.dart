@@ -21,9 +21,9 @@ class _MainPageState extends State<MainPage> {
     } else {
       db.loadData();
     }
-    // for (int i = 0; i < db.notes.length; i++) {
-    //   db.notes[i][3] = DateTime.now();
-    // }
+    for (int i = 0; i < db.notes.length; i++) {
+      db.notes[i][3] = DateTime.now();
+    }
 
     super.initState();
   }
