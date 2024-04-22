@@ -9,20 +9,20 @@ class NoteDataBase {
   // run this method if this is the 1st time ever opening this app
   void createInitialData() {
     notes = [
-      [
-        "Packliste",
-        "Laptop + Ladekabel bla bla bla bla bla bla bla bla bla bla\nHandy\nKopfhörer",
-        DateTime(2020, 3, 4, 10).toString(),
-        DateTime(2021, 3, 4, 10).toString(),
-        100
-      ],
-      [
-        "Einkaufen",
-        "Karotten\nTomaten\nSchnitzel",
-        DateTime(2023, 3, 4, 10).toString(),
-        DateTime(2023, 3, 5, 12).toString(),
-        -1
-      ],
+      // [
+      //   "Packliste",
+      //   "Laptop + Ladekabel bla bla bla bla bla bla bla bla bla bla\nHandy\nKopfhörer",
+      //   DateTime(2020, 3, 4, 10).toString(),
+      //   DateTime(2021, 3, 4, 10).toString(),
+      //   100
+      // ],
+      // [
+      //   "Einkaufen",
+      //   "Karotten\nTomaten\nSchnitzel",
+      //   DateTime(2023, 3, 4, 10).toString(),
+      //   DateTime(2023, 3, 5, 12).toString(),
+      //   -1
+      // ],
     ];
   }
 

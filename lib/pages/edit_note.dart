@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:vnotes_flutter/utils/note_tile.dart';
 
 import '../database/db.dart';
 
@@ -8,6 +9,7 @@ class EditNote extends StatelessWidget {
   final controllerTitle;
   final controllerBody;
   final change;
+  final createdAt;
   VoidCallback onSave;
   VoidCallback onChange;
   VoidCallback onCancel;
@@ -16,6 +18,7 @@ class EditNote extends StatelessWidget {
       required this.controllerTitle,
       required this.controllerBody,
       required this.change,
+      required this.createdAt,
       required this.onSave,
       required this.onChange,
       required this.onCancel});
@@ -40,6 +43,26 @@ class EditNote extends StatelessWidget {
               ],
             ),
           ),
+          actions: [
+            Padding(
+              padding: EdgeInsets.all(5),
+              child: Row(
+                children: [
+                  TimeLeft(
+                    value: calcTimeLeft(createdAt),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Icon(
+                      Icons.more_horiz,
+                      color: Colors.black,
+                      size: 28,
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
           iconTheme: const IconThemeData(
             color: Colors.green, //change your color here
           ),

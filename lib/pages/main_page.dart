@@ -21,10 +21,7 @@ class _MainPageState extends State<MainPage> {
     } else {
       db.loadData();
     }
-    for (int i = 0; i < db.notes.length; i++) {
-      db.notes[i][3] = DateTime.now();
-    }
-
+    db.updateDataBase();
     super.initState();
   }
 
@@ -97,8 +94,17 @@ class _MainPageState extends State<MainPage> {
             changeNote(-1);
           },
           change: false,
+          createdAt: DateTime.now(),
           onCancel: () => Navigator.of(context).pop(),
         );
+      },
+    ));
+  }
+
+  void openSettings() {
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) {
+        return Settings();
       },
     ));
   }
@@ -112,6 +118,7 @@ class _MainPageState extends State<MainPage> {
           controllerTitle: _controllerTitle,
           controllerBody: _controllerBody,
           change: true,
+          createdAt: db.notes[index][2],
           onSave: () {},
           onChange: () {
             changeNote(index);
@@ -129,31 +136,79 @@ class _MainPageState extends State<MainPage> {
           "vnotes",
           style: TextStyle(color: Colors.black),
         ),
+        actions: [
+          GestureDetector(
+            onTap: openSettings,
+            child: const Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Icon(
+                Icons.more_horiz,
+                color: Colors.black,
+                size: 28,
+              ),
+            ),
+          ),
+        ],
         backgroundColor: Colors.white,
         shadowColor: Colors.grey.withOpacity(0.3),
       ),
       floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.white,
           onPressed: () {
             createNewTask();
           },
-          child: Icon(Icons.create)),
+          child: Icon(
+            Icons.create,
+            color: Colors.black,
+          )),
       body: ListView.builder(
         itemCount: db.notes.length,
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              //TODO: If I often open and close the node, it duplicates itself. Why?
               openNote(db.notes[index][0], db.notes[index][1], index);
             },
             child: NoteTile(
               noteTitle: db.notes[index][0],
               noteBody: db.notes[index][1],
-              updatedAt: db.notes[index][3],
+              createdAt: db.notes[index][3],
+              delTime: db.notes[index][4],
               onChanged: (value) => () {},
               deleteFunction: (context) => deleteTask(index),
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class Settings extends StatelessWidget {
+  const Settings({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TooltipVisibility(
+      visible: false,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            "Settings",
+            style: TextStyle(color: Colors.black),
+          ),
+          leading: const Row(
+            children: [
+              BackButton(
+                color: Colors.green,
+              ),
+            ],
+          ),
+          shadowColor: Colors.transparent,
+          backgroundColor: Colors.transparent,
+        ),
+        //TODO: Select default disappearing time - Start with 24 hours?
       ),
     );
   }
