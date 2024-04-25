@@ -58,6 +58,7 @@ class NoteTile extends StatelessWidget {
                         fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   const Spacer(),
+                  //TODO: Fix Time Left Tile for Notes List
                   TimeLeft(
                     value: calcTimeLeft(createdAt, delTime),
                     hours: delTime,
@@ -69,6 +70,7 @@ class NoteTile extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
+                      //Display updatedAt instead?
                       CalendarTime(createdAt).toHuman,
                       style: const TextStyle(
                           fontWeight: FontWeight.normal,

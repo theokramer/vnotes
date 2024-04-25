@@ -33,10 +33,12 @@ class EditNote extends StatefulWidget {
 class _EditNoteState extends State<EditNote> {
   NoteDataBase db = NoteDataBase();
   var time = "0";
+  var lastVal = "pinned";
 
   @override
   void initState() {
     widget.controllerTime.addListener(refreshTime);
+    lastVal = widget.controllerTime.text;
     super.initState();
   }
 
@@ -66,6 +68,7 @@ class _EditNoteState extends State<EditNote> {
             backgroundColor: Colors.white,
             child: Container(
               height: 200,
+              width: MediaQuery.of(context).size.width / 1.5,
               child: Column(
                 children: [
                   Row(
@@ -80,7 +83,7 @@ class _EditNoteState extends State<EditNote> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     child: const Text(
-                      "Change Time at which the Note disappears",
+                      "The Note disappears after",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 15),
                     ),
@@ -99,13 +102,40 @@ class _EditNoteState extends State<EditNote> {
                         hintText: "Disappear after...",
                       ),
                     ),
+                    //TODO: Display here a text which says "hours"
                   ),
                   Row(
                     children: [
                       Spacer(),
-                      Icon(Icons.check_box),
-                      Container(
-                          padding: EdgeInsets.all(10), child: Text("Pin?")),
+                      GestureDetector(
+                        //TODO: Implement that you can pin the note
+                        onTap: () {
+                          setState(() {
+                            if (lastVal == "pinned") {
+                              lastVal = widget.controllerTime.text;
+                              widget.controllerTime.text = "pinned";
+                            } else {
+                              widget.controllerTime.text = lastVal;
+                              lastVal = "pinned";
+                            }
+                          });
+                        },
+                        child: Container(
+                            child: Row(
+                          children: [
+                            Stack(
+                              children: [
+                                widget.controllerTime.text != "pinned"
+                                    ? Icon(Icons.check_box_outline_blank)
+                                    : Icon(Icons.check_box),
+                              ],
+                            ),
+                            Container(
+                                padding: EdgeInsets.all(10),
+                                child: Text("Pin?")),
+                          ],
+                        )),
+                      ),
                       Spacer()
                     ],
                   )
@@ -132,6 +162,7 @@ class _EditNoteState extends State<EditNote> {
                   onPressed: widget.change ? widget.onChange : widget.onSave,
                   color: Colors.green,
                 ),
+                //TODO: Display Logo and improve Text
                 const Text("vnotes",
                     style: TextStyle(fontSize: 15, color: Colors.green)),
               ],
@@ -143,13 +174,17 @@ class _EditNoteState extends State<EditNote> {
               child: Row(
                 children: [
                   TimeLeft(
-                    value: isNumeric(widget.controllerTime.text)
-                        ? calcTimeLeft(widget.createdAt,
-                            int.parse(widget.controllerTime.text))
-                        : 1,
-                    hours: isNumeric(widget.controllerTime.text)
-                        ? int.parse(widget.controllerTime.text)
-                        : 24,
+                    value: widget.controllerTime.text != "pinned"
+                        ? isNumeric(widget.controllerTime.text)
+                            ? calcTimeLeft(widget.createdAt,
+                                int.parse(widget.controllerTime.text))
+                            : 1
+                        : -1,
+                    hours: widget.controllerTime.text != "pinned"
+                        ? isNumeric(widget.controllerTime.text)
+                            ? int.parse(widget.controllerTime.text)
+                            : 24
+                        : -1,
                   ),
                   GestureDetector(
                       onTap: changeDisTime,
@@ -188,6 +223,7 @@ class _EditNoteState extends State<EditNote> {
                 Container(
                   padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: SingleChildScrollView(
+                    //TODO: Can you press return at the heading, so you can type the body?
                     child: TextField(
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
