@@ -16,13 +16,27 @@ class _MainPageState extends State<MainPage> {
   NoteDataBase db = NoteDataBase();
   @override
   void initState() {
+    _controllerTime.text = "99";
     if (_notes.get("NOTES") == null) {
       db.createInitialData();
     } else {
       db.loadData();
+      deleteExpiredNotes();
     }
     db.updateDataBase();
     super.initState();
+  }
+
+  void deleteExpiredNotes() {
+    for (int i = 0; i < db.notes.length; i++) {
+      print(calcTimeLeft(db.notes[i][2], db.notes[i][4]));
+      if (calcTimeLeft(db.notes[i][2], db.notes[i][4]) < 0 &&
+          calcTimeLeft(db.notes[i][2], db.notes[i][4]) != -1) {
+        print("removed: " + db.notes[i]);
+        db.notes.removeAt(i);
+      }
+    }
+    db.updateDataBase();
   }
 
   void deleteTask(int index) {
@@ -34,6 +48,7 @@ class _MainPageState extends State<MainPage> {
 
   final _controllerTitle = TextEditingController();
   final _controllerBody = TextEditingController();
+  final _controllerTime = TextEditingController();
 
   void saveNewTask() {
     setState(() {
@@ -45,7 +60,7 @@ class _MainPageState extends State<MainPage> {
               _controllerBody.text,
               DateTime.now(),
               DateTime.now(),
-              24
+              int.parse(_controllerTime.text),
             ]);
       _controllerTitle.clear();
       _controllerBody.clear();
@@ -63,18 +78,16 @@ class _MainPageState extends State<MainPage> {
         var updatedNote = [
           _controllerTitle.text,
           _controllerBody.text,
+          db.notes[index][2],
           DateTime.now(),
-          DateTime.now(),
-          24
+          db.notes[index][4]
         ];
-
         // Update the note at the given index with the updated note
         db.notes[index] = updatedNote;
 
         // Clear text controllers
         _controllerTitle.clear();
         _controllerBody.clear();
-
         // Update the database
         db.updateDataBase();
       }
@@ -89,6 +102,7 @@ class _MainPageState extends State<MainPage> {
         return EditNote(
           controllerTitle: _controllerTitle,
           controllerBody: _controllerBody,
+          controllerTime: _controllerTime,
           onSave: saveNewTask,
           onChange: () {
             changeNote(-1);
@@ -117,6 +131,7 @@ class _MainPageState extends State<MainPage> {
         return EditNote(
           controllerTitle: _controllerTitle,
           controllerBody: _controllerBody,
+          controllerTime: _controllerTime,
           change: true,
           createdAt: db.notes[index][2],
           onSave: () {},
@@ -131,6 +146,7 @@ class _MainPageState extends State<MainPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      //TODO: Make App Bar thicker and change logo and Text (Figma)
       appBar: AppBar(
         title: const Text(
           "vnotes",
@@ -157,7 +173,7 @@ class _MainPageState extends State<MainPage> {
           onPressed: () {
             createNewTask();
           },
-          child: Icon(
+          child: const Icon(
             Icons.create,
             color: Colors.black,
           )),

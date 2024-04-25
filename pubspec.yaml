@@ -70,9 +70,8 @@ flutter:
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
   assets:
-   - assets/
-  #  - assets/translations/de.json # <--- THIS LINE WAS ADDED
-   - assets/translations/en.json # <--- THIS LINE WAS ADDED
+    - assets/
+    - assets/images/infinity.png
 
 
 

@@ -8,6 +8,7 @@ class EditNote extends StatelessWidget {
   NoteDataBase db = NoteDataBase();
   final controllerTitle;
   final controllerBody;
+  final controllerTime;
   final change;
   final createdAt;
   VoidCallback onSave;
@@ -17,6 +18,7 @@ class EditNote extends StatelessWidget {
       {super.key,
       required this.controllerTitle,
       required this.controllerBody,
+      required this.controllerTime,
       required this.change,
       required this.createdAt,
       required this.onSave,
@@ -49,9 +51,11 @@ class EditNote extends StatelessWidget {
               child: Row(
                 children: [
                   TimeLeft(
-                    value: calcTimeLeft(createdAt),
+                    value:
+                        calcTimeLeft(createdAt, int.parse(controllerTime.text)),
+                    hours: int.parse(controllerTime.text),
                   ),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.all(10),
                     child: Icon(
                       Icons.more_horiz,

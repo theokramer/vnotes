@@ -59,7 +59,8 @@ class NoteTile extends StatelessWidget {
                   ),
                   const Spacer(),
                   TimeLeft(
-                    value: calcTimeLeft(createdAt),
+                    value: calcTimeLeft(createdAt, delTime),
+                    hours: delTime,
                   )
                 ],
               ),
@@ -104,16 +105,20 @@ class NoteTile extends StatelessWidget {
   }
 }
 
-int calcTimeLeft(DateTime updatedAt) {
-  return updatedAt
-      .add(const Duration(days: 1))
-      .difference(DateTime.now())
-      .inMinutes;
+int calcTimeLeft(DateTime updatedAt, int hours) {
+  return !(hours == -1)
+      ? updatedAt
+          .add(Duration(hours: hours))
+          .difference(DateTime.now())
+          .inMinutes
+      : -1;
 }
 
 class TimeLeft extends StatelessWidget {
+  final int hours;
   final int value;
   const TimeLeft({
+    required this.hours,
     required this.value,
     super.key,
   });
@@ -124,28 +129,32 @@ class TimeLeft extends StatelessWidget {
       width: 35,
       height: 35,
       child: Stack(children: [
+        value != -1
+            ? Center(
+                child: Stack(children: [
+                  CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    value: 1,
+                    color: Colors.grey.withOpacity(0.1),
+                  ),
+                  CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    value: (value / (hours * 60)),
+                    color: (value / (hours * 60)) > 0.7
+                        ? Colors.green
+                        : value / (hours * 60) > 0.4
+                            ? Colors.orange
+                            : Colors.red,
+                  ),
+                ]),
+              )
+            : Text(""),
         Center(
-          child: Stack(children: [
-            CircularProgressIndicator(
-              strokeWidth: 2.5,
-              value: 1,
-              color: Colors.grey.withOpacity(0.1),
-            ),
-            CircularProgressIndicator(
-              strokeWidth: 2.5,
-              value: (value / (24 * 60)),
-              color: (value / (24 * 60)) > 0.7
-                  ? Colors.green
-                  : value / (24 * 60) > 0.4
-                      ? Colors.orange
-                      : Colors.red,
-            ),
-          ]),
-        ),
-        Center(
-            child: Text((value / 60).round().toString(),
-                style: const TextStyle(
-                    fontWeight: FontWeight.w300, color: Colors.black))),
+            child: value != -1
+                ? Text((value / 60).round().toString(),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w300, color: Colors.black))
+                : Icon(Icons.push_pin)),
       ]),
     );
   }
